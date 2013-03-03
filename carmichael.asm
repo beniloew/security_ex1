@@ -1,6 +1,7 @@
 org 100h
 
-call calc_mod
+mov ax,[test_val]
+call is_carmichael
 mov ah,4Ch
 int 21h
 
@@ -117,3 +118,5 @@ korselts_divider_failed:
 	mov ax,0
 	pop bx
 	ret
+
+test_val dw 1729
