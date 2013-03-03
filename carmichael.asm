@@ -78,20 +78,25 @@ is_not_carmichael_exit:
 
 
 ; This function checks a single prime diviser against the korselts criterion ;
-; ax - the number checked against, cx - the prime divider					 ;
+; ax & dx - the number checked against, cx - the prime divider				 ;
 ; returns 1 in ax if passed the test, 0 otherwise							 ;
 korselts_divider_check:
 	push bx ; we will use bx in this function - so save it
-	push ax
 	mov bx,cx
 	call calc_mod
 	cmp ax,0 ; equal if cx is a divisor of ax
 	jne korselts_divider_passed
+
+	mov ax,dx ; restore original ax
+ 	push dx ; we will change dx for dividing - so save it
+	xor dx,dx ; need to reset dx for proper dividing
 	div cx
+	pop dx
+
 	call calc_mod
 	cmp ax,0 ; equal if cx is a square divisor of ax
 	je korselts_divider_failed
-	pop ax
+	mov ax,dx
 	dec ax
 	mov bx,cx
 	dec bx
