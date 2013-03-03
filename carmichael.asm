@@ -48,9 +48,13 @@ is_not_prime:
 is_carmichael:
 	pusha
 	mov dx,ax ; save the original ax
+	call is_prime
+	cmp ax,1
+	je is_not_carmichael_exit ; prime number cannot be a carmichael number
+	mov ax,dx ; restore after prime check
 	mov cx,2
 	mov bx,ax
-	sar bx,1 ; we will check dividers till bx, no sense to check further
+	sar bx,1 ; we will check dividers till bx(ax / 2), no sense to check further
 is_carmichael_loop:
 	mov ax,cx
 	call is_prime
