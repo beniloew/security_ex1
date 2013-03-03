@@ -43,3 +43,68 @@ is_prime_indeed:
 is_not_prime:
 	mov ax,0
 	jmp is_prime_exit
+
+; TODO: check for small ax's;
+is_carmichael:
+	pusha
+	mov dx,ax ; save the original ax
+	mov cx,2
+	mov bx,ax
+	sar bx,1 ; we will check dividers till bx, no sense to check further
+is_carmichael_loop:
+	mov ax,cx
+	call is_prime
+	cmp ax,0
+	je is_carmichael_loop_step
+	mov ax,dx
+	call korselts_divider_check
+	cmp ax,0
+	je is_not_carmichael_exit
+
+is_carmichael_loop_step:
+	inc cx
+	cmp cx,bx
+	jbe is_carmichael_loop
+
+; is_carmichael_exit ; (label not needed)
+	popa
+	mov ax,1
+	ret
+
+is_not_carmichael_exit:
+	popa
+	mov ax,0
+	ret
+
+
+; This function checks a single prime diviser against the korselts criterion ;
+; ax - the number checked against, cx - the prime divider					 ;
+; returns 1 in ax if passed the test, 0 otherwise							 ;
+korselts_divider_check:
+	push bx ; we will use bx in this function - so save it
+	push ax
+	mov bx,cx
+	call calc_mod
+	cmp ax,0 ; equal if cx is a divisor of ax
+	jne korselts_divider_passed
+	div cx
+	call calc_mod
+	cmp ax,0 ; equal if cx is a square divisor of ax
+	je korselts_divider_failed
+	pop ax
+	dec ax
+	mov bx,cx
+	dec bx
+	call calc_mod
+	cmp ax,0
+	jne korselts_divider_failed
+
+korselts_divider_passed:
+	mov ax,1
+	pop bx
+	ret
+
+korselts_divider_failed:
+	mov ax,0
+	pop bx
+	ret
