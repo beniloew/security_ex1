@@ -13,8 +13,6 @@ calc_mod:
 calc_mod_exit:
 	ret
 
-; TODO - check if ax is 1 or 0 ;
-
 is_prime:
 	push bx
 	push cx
@@ -29,7 +27,7 @@ is_prime_loop:
 	mov ax,cx
 	call calc_mod
 	cmp ax,0
-	jne is_prime_exit ; ax is 0 - that means that the original ax isn't a prime
+	je is_prime_exit ; ax is 0 - that means that the original ax isn't a prime
 	dec bx
 	jmp is_prime_loop
 
