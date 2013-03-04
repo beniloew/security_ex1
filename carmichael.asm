@@ -45,9 +45,10 @@ is_not_prime:
 	mov ax,0
 	jmp is_prime_exit
 
-; TODO: check for small ax's;
 is_carmichael:
 	pusha
+	cmp ax,1
+	jbe is_not_carmichael_exit
 	mov dx,ax ; save the original ax
 	call is_prime
 	cmp ax,1
